@@ -28,15 +28,15 @@ pipeline {
             }
         }
 
-        stage('Prepare .env File') {
-            steps {
-                echo "Removing the existing .env file if it exists"
-                sh 'rm -f .env'
-                echo "Copying the new .env file"
-                sh "cp ${USER_SERVICE_ENV} .env"
-                echo "=================env file copied successfully================"
-            }
-        }
+        // stage('Prepare .env File') {
+        //     steps {
+        //         echo "Removing the existing .env file if it exists"
+        //         sh 'rm -f .env'
+        //         echo "Copying the new .env file"
+        //         sh "cp ${USER_SERVICE_ENV} .env"
+        //         echo "=================env file copied successfully================"
+        //     }
+        // }
 
         stage('Build Docker Image') {
             steps {
