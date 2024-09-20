@@ -10,39 +10,19 @@ pipeline {
         SNIRALA_DOCKERHUB_CREDENTIAL = 'snirala-dockerhub-credentials'
         SERVER_1 = '34.131.139.0' 
         CREDENTIALS_SERVER_2 = 'credentials-server-2'
+        HOST_PORT = '9091'
     }
 
-   /*  parameters {
-        choice(name: 'ENVIRONMENT', choices: ['Dev', 'Stage', 'Live'], description: 'Select The Environment')
-    } */
-
     stages {
-        /* stage('Set Ports') {
-            steps {
-                script {
-                    // Set ports based on the selected environment
-                    if (params.ENVIRONMENT == 'Dev') {
-                        env.HOST_PORT = '5002'
-                        env.SERVER_IP = "http://${SERVER_1}:${env.HOST_PORT}"
-                    } else if (params.ENVIRONMENT == 'Stage') {
-                        env.HOST_PORT = '5001'
-                        env.SERVER_IP = "http://${SERVER_1}:${env.HOST_PORT}"
-                    } else if (params.ENVIRONMENT == 'Live') {
-                        env.HOST_PORT = '5000'
-                        env.SERVER_IP = "http://${SERVER_1}:${env.HOST_PORT}"
-                    }
-                }
-            }
-        } */
 
         stage('Check Existing Container') {
             steps {
                 script {
                     echo "Checking if the container already exists"
-                    def existingContainer = sh(script: "docker ps -aqf name=${CONTAINER_NAME}-${env.HOST_PORT}", returnStdout: true).trim()
+                    def existingContainer = sh(script: "docker ps -aqf name=${CONTAINER_NAME}-${HOST_PORT}", returnStdout: true).trim()
                     if (existingContainer) {
-                        echo "Stopping and removing the existing container: ${CONTAINER_NAME}-${env.HOST_PORT}"
-                        sh "docker rm -f ${CONTAINER_NAME}-${env.HOST_PORT}"
+                        echo "Stopping and removing the existing container: ${CONTAINER_NAME}-${HOST_PORT}"
+                        sh "docker rm -f ${CONTAINER_NAME}-${HOST_PORT}"
                     }
                 }
             }

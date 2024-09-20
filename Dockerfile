@@ -27,7 +27,7 @@ WORKDIR /app
 COPY --from=build /app/user_services .
 
 # Expose the necessary port (if the service runs on 8080)
-EXPOSE 9094
+EXPOSE 9091
 
 # Run the application
 CMD ["./user_services"]
