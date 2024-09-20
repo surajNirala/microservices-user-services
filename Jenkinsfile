@@ -6,7 +6,7 @@ pipeline {
         DOCKER_IMAGE_TAG = "${DOCKER_HUB_REPO}:${env.BUILD_NUMBER}"
         CONTAINER_NAME = 'user_services' // Name for your Docker container
         CONTAINER_PORT = '9091' // Port inside the Docker container
-        MY_ENV_FILE = credentials('USER_SERVICE_ENV') // For secret file
+        USER_SERVICE_ENV = credentials('USER_SERVICE_ENV') // For secret file
         SNIRALA_DOCKERHUB_CREDENTIAL = 'snirala-dockerhub-credentials'
         SERVER_1 = '34.131.139.0' 
         CREDENTIALS_SERVER_2 = 'credentials-server-2'
@@ -33,7 +33,7 @@ pipeline {
                 echo "Removing the existing .env file if it exists"
                 sh 'rm -f .env'
                 echo "Copying the new .env file"
-                sh "cp ${MY_ENV_FILE} .env"
+                sh "cp ${USER_SERVICE_ENV} .env"
             }
         }
 
