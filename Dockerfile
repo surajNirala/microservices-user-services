@@ -26,6 +26,10 @@ WORKDIR /app
 # Copy the binary from the builder stage
 COPY --from=build /app/user_services .
 
+# Copy the .env file (make sure it is properly included)
+COPY .env .  
+# Ensure the `.env` file is in the build context and copied
+
 # Expose the necessary port (if the service runs on 8080)
 EXPOSE 9091
 

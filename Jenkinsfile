@@ -86,11 +86,14 @@ pipeline {
                             docker rm -f ${CONTAINER_NAME}-${HOST_PORT} || true
 
                             echo "Running the Docker container"
-                            docker run -d --init -p ${HOST_PORT}:${CONTAINER_PORT} --name ${CONTAINER_NAME}-${HOST_PORT} ${DOCKER_IMAGE_TAG}
+                            
+                            docker run -d --init -p ${HOST_PORT}:${CONTAINER_PORT} --name ${CONTAINER_NAME}-${HOST_PORT} --env-file .env ${DOCKER_IMAGE_TAG}
+
                             echo "Docker image ${DOCKER_IMAGE_TAG} run successfully."
                             exit
                         """
                         }
+                        //docker run -d --init -p ${HOST_PORT}:${CONTAINER_PORT} --name ${CONTAINER_NAME}-${HOST_PORT} ${DOCKER_IMAGE_TAG}
                     }
                        
                 }
@@ -104,7 +107,7 @@ pipeline {
                 echo "Docker image ${DOCKER_IMAGE_TAG} successfully pushed to Docker Hub."
                 echo "Container running on port: ${HOST_PORT}"
                 echo "Pipeline completed successfully."
-                echo "Click the following link to check the website live: ${env.SERVER_IP}"
+                echo "Click the following link to check the website live: ${SERVER_IP}:"
             }
         }
         failure {
