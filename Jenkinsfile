@@ -34,6 +34,7 @@ pipeline {
                 sh 'rm -f .env'
                 echo "Copying the new .env file"
                 sh "cp ${USER_SERVICE_ENV} .env"
+                echo "=================env file copied successfully================"
             }
         }
 
