@@ -11,10 +11,28 @@ pipeline {
         SERVER_1 = '34.131.139.0' 
         CREDENTIALS_SERVER_2 = 'credentials-server-2'
         HOST_PORT = '9091'
+        SONARQUBE_KEY = 'sqp_934b83360cc3b9fadb0fc65d806bd551c495056f' 
     }
 
     stages {
-
+        stage('Code Analysis') {
+            environment {
+                scannerHome = tool 'Sonar-Scanner'
+            }
+            steps {
+                script {
+                    withSonarQubeEnv('Sonar-Scanner') {
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=microservice-userservice \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=https://sonarqube.dhimalu.xyz \
+                            -Dsonar.login=sqp_934b83360cc3b9fadb0fc65d806bd551c495056f
+                        """
+                    }
+                }
+            }
+        }
         stage('Check Existing Container') {
             steps {
                 script {
@@ -28,15 +46,15 @@ pipeline {
             }
         }
 
-        // stage('Prepare .env File') {
-        //     steps {
-        //         echo "Removing the existing .env file if it exists"
-        //         sh 'rm -f .env'
-        //         echo "Copying the new .env file"
-        //         sh "cp ${USER_SERVICE_ENV} .env"
-        //         echo "=================env file copied successfully================"
-        //     }
-        // }
+        stage('Prepare .env File') {
+            steps {
+                echo "Removing the existing .env file if it exists"
+                sh 'rm -f .env'
+                echo "Copying the new .env file"
+                sh "cp ${USER_SERVICE_ENV} .env"
+                echo "=================env file copied successfully================"
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
@@ -87,13 +105,12 @@ pipeline {
 
                             echo "Running the Docker container"
                             
-                            docker run -d --init -p ${HOST_PORT}:${CONTAINER_PORT} --name ${CONTAINER_NAME}-${HOST_PORT} --env-file .env ${DOCKER_IMAGE_TAG}
+                            docker run -d --init -p ${HOST_PORT}:${CONTAINER_PORT} --name ${CONTAINER_NAME}-${HOST_PORT} ${DOCKER_IMAGE_TAG}
 
                             echo "Docker image ${DOCKER_IMAGE_TAG} run successfully."
                             exit
                         """
                         }
-                        //docker run -d --init -p ${HOST_PORT}:${CONTAINER_PORT} --name ${CONTAINER_NAME}-${HOST_PORT} ${DOCKER_IMAGE_TAG}
                     }
                        
                 }
@@ -107,7 +124,7 @@ pipeline {
                 echo "Docker image ${DOCKER_IMAGE_TAG} successfully pushed to Docker Hub."
                 echo "Container running on port: ${HOST_PORT}"
                 echo "Pipeline completed successfully."
-                echo "Click the following link to check the website live: ${SERVER_1}:"
+                echo "Click the following link to check the website live: http://${SERVER_1}:${HOST_PORT}"
             }
         }
         failure {
